@@ -4,5 +4,9 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/FlappyBird.unity
+    guid: defcde85289424040a0faca739b49837
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0
