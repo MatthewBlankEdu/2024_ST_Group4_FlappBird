@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Serialization;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,6 +16,21 @@ public class BirdController : MonoBehaviour
     public int Points;
 
     public GameObject GameOverScreen;
+    public TextMeshProUGUI PointsTextField;
+    public TextMeshProUGUI HighscorePointsTextField;
+
+    public Animator Anim;
+    public AudioSource Source;
+
+    public AudioClip JumpSfx;
+    public AudioClip ScoreSfx;
+    public AudioClip DeathSfx;
+
+    private void PlaySound(AudioClip clip)
+    {
+        Source.clip = clip;
+        Source.Play();
+    }
 
     public void Restart()
     {
@@ -30,11 +47,16 @@ public class BirdController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        PointsTextField.text = Points.ToString();
+
         if (GameOver)
             return;
 
         if (Input.GetButtonDown("Jump"))
         {
+            PlaySound(JumpSfx);
+            Anim.SetTrigger("FlapWings");
+
             if (!HasStarted)
             {
                 HasStarted = true;
@@ -49,6 +71,18 @@ public class BirdController : MonoBehaviour
     {
         GameOverScreen.SetActive(true);
         GameOver = true;
+
+        PlaySound(DeathSfx);
+
+        if (Points > PlayerPrefs.GetInt("Highscore"))
+        {
+            HighscorePointsTextField.text = Points.ToString();
+            PlayerPrefs.SetInt("Highscore", Points);
+        }
+        else
+        {
+            HighscorePointsTextField.text = PlayerPrefs.GetInt("Highscore").ToString();
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -56,6 +90,8 @@ public class BirdController : MonoBehaviour
         if(collision.CompareTag("Point"))
         {
             Points++;
+
+            PlaySound(ScoreSfx);
         }
     }
 
